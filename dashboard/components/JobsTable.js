@@ -39,7 +39,7 @@ export default function JobsTable({
             <select
               value={statusFilter}
               onChange={(e) => onStatusFilter(e.target.value)}
-              className="ml-2 rounded-lg border border-surface-border bg-black/25 px-2 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-sky-500/50"
+              className="ml-2 rounded-lg border border-surface-border bg-black/75 px-2 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-sky-500/50"
             >
               <option value="">All</option>
               <option value="pending">pending</option>
@@ -82,9 +82,8 @@ export default function JobsTable({
                 <tr
                   key={job.jobId}
                   onClick={() => onSelect(job)}
-                  className={`cursor-pointer transition hover:bg-white/5 ${
-                    selectedId === job.jobId ? "bg-sky-500/10" : ""
-                  }`}
+                  className={`cursor-pointer transition hover:bg-white/5 ${selectedId === job.jobId ? "bg-sky-500/10" : ""
+                    }`}
                 >
                   <td className="max-w-[140px] truncate px-4 py-3 font-mono text-xs text-slate-200">
                     {job.jobId}

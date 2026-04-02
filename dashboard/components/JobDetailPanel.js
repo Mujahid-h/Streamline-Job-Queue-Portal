@@ -5,14 +5,14 @@ import StatusBadge from "./StatusBadge";
 export default function JobDetailPanel({ job, isFetching, error, onClose }) {
   if (!job && !error) {
     return (
-      <aside className="w-full max-w-md shrink-0 rounded-xl border border-dashed border-surface-border bg-surface-card/40 p-6 text-sm text-accent-muted">
+      <aside className=" max-w-xs shrink-0 rounded-xl border border-dashed border-surface-border bg-surface-card/40 p-6 text-sm text-accent-muted">
         Select a job to inspect details, progress, and processing results.
       </aside>
     );
   }
 
   return (
-    <aside className="w-full max-w-md shrink-0 rounded-xl border border-surface-border bg-surface-card/90 p-5 shadow-xl ring-1 ring-white/5 backdrop-blur">
+    <aside className=" max-w-md shrink-0 rounded-xl border border-surface-border bg-surface-card/90 p-5 shadow-xl ring-1 ring-white/5 backdrop-blur">
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="text-lg font-semibold text-white">Job detail</h3>
