@@ -77,17 +77,15 @@ export default function JobDetailPanel({ job, isFetching, error, onClose }) {
               </p>
               <ul className="mt-2 space-y-1 text-slate-200">
                 <li>Total rows: {job.result.totalRows}</li>
-                <li>Valid: {job.result.validRows}</li>
-                <li>Invalid: {job.result.invalidRows}</li>
                 <li>Duplicates: {job.result.duplicateRows}</li>
                 <li>Unique rows: {job.result.uniqueRows}</li>
                 <li>Time: {job.result.processingTimeMs} ms</li>
               </ul>
-              {job.result.summary && (
+              {/* {job.result.summary && (
                 <p className="mt-3 text-xs leading-relaxed text-slate-400">
                   {job.result.summary}
                 </p>
-              )}
+              )} */}
             </div>
           )}
         </dl>

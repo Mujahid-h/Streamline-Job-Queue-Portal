@@ -47,7 +47,7 @@ export default function HomePage() {
       const res = await listJobs({
         status: statusFilter || undefined,
         page,
-        limit: 15,
+        limit: 10,
       });
       setJobs(res.data?.jobs || []);
       setPagination(res.data?.pagination || null);

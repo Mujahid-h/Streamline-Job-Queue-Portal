@@ -27,6 +27,7 @@ export default function FileUploadCard({ onUploaded }) {
       setMessage({ type: "err", text: err.message || "Upload failed" });
     } finally {
       setBusy(false);
+      setPriority(0);
     }
   };
 

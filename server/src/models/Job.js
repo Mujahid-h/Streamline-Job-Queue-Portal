@@ -69,7 +69,7 @@ const JobSchema = new mongoose.Schema(
     filePath: { type: String, required: true },
     fileSizeBytes: { type: Number, default: 0 },
     mimeType: { type: String },
-    attempts: { type: Number, default: 0 },
+    attempts: { type: Number, default: 1 },
     maxAttempts: { type: Number, default: 3 },
     errorMessage: { type: String },
     result: { type: JobResultSchema },

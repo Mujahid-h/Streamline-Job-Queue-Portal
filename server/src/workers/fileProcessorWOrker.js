@@ -17,7 +17,7 @@ const workerConnection = createRedisConnection();
 const processJob = async (bullJob) => {
   const { jobId, filePath } = bullJob.data;
 
-  console.log(`Processing job ${jobId} (bull: ${bullJob.id})`);
+  console.log(`Processing job having Id: ${jobId}`);
 
   await Job.findOneAndUpdate(
     { jobId },
@@ -42,8 +42,6 @@ const processJob = async (bullJob) => {
       completedAt: new Date(),
       result: {
         totalRows: result.totalRows,
-        validRows: result.validRows,
-        invalidRows: result.invalidRows,
         duplicateRows: result.duplicateRows,
         uniqueRows: result.uniqueRows,
         processingTimeMs: result.processingTimeMs,
@@ -70,11 +68,11 @@ const startWorker = async () => {
   });
 
   worker.on("completed", (job) => {
-    console.log(`[Worker] Job ${job.data.jobId} completed (bull: ${job.id})`);
+    console.log(`Worker Job ${job.data.jobId} completed `);
   });
 
   worker.on("failed", async (job, err) => {
-    console.error(`[Worker] Job ${job?.data?.jobId} failed: ${err.message}`);
+    console.error(`Worker Job ${job?.data?.jobId} failed: ${err.message}`);
 
     if (!job) return;
 
@@ -91,11 +89,11 @@ const startWorker = async () => {
   });
 
   worker.on("progress", (job, progress) => {
-    console.log(`[Worker] Job ${job.data.jobId} progress: ${progress}%`);
+    console.log(`Worker Job ${job.data.jobId} progress: ${progress}%`);
   });
 
   worker.on("error", (err) => {
-    console.error("[Worker] Worker-level error:", err.message);
+    console.error("Worker-level error:", err.message);
   });
 
   const shutdown = async (signal) => {

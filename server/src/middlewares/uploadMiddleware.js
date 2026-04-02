@@ -35,6 +35,7 @@ const streamUpload = (req, res, next) => {
   let filePath = null;
   let originalFilename = null;
   let mimeType = null;
+  let priorityValue = null; // multipart field "priority" sent by the client
   let writeStream = null;
   let aborted = false;
 
@@ -78,7 +79,7 @@ const streamUpload = (req, res, next) => {
     fileStream.on("limit", () => {
       aborted = true;
       writeStream.destroy();
-      fs.unlink(filePath, () => {});
+      fs.unlink(filePath, () => { });
 
       if (!res.headersSent) {
         return res.status(413).json({
@@ -92,8 +93,15 @@ const streamUpload = (req, res, next) => {
       console.error("File stream error during upload:", err);
       aborted = true;
       writeStream.destroy();
-      if (fs.existsSync(filePath)) fs.unlink(filePath, () => {});
+      if (fs.existsSync(filePath)) fs.unlink(filePath, () => { });
     });
+  });
+
+  bb.on("field", (fieldname, value) => {
+    // busboy parses non-file multipart fields; we forward priority to the controller.
+    if (fieldname === "priority") {
+      priorityValue = value;
+    }
   });
 
   bb.on("finish", () => {
@@ -114,6 +122,14 @@ const streamUpload = (req, res, next) => {
         fileSizeBytes,
         mimeType,
       };
+
+      // `uploadControllers` reads `req.body.priority`, but with streaming multipart
+      // uploads we don't have an express body parser. Attach it manually.
+      req.body = req.body || {};
+      if (priorityValue !== null) {
+        req.body.priority = priorityValue;
+      }
+
       next();
     });
 

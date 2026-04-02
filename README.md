@@ -4,46 +4,9 @@ A small full-stack app: an **Express** API accepts CSV uploads, enqueues work on
 
 ---
 
-## Architecture
 
-```mermaid
-flowchart LR
-  subgraph client [Dashboard]
-    Next[Next.js on port 3001]
-  end
-  subgraph api [API server]
-    Express[Express on port 3000]
-    Upload[Upload + enqueue]
-    Express --> Upload
-  end
-  subgraph infra [Infrastructure]
-    Mongo[(MongoDB)]
-    Redis[(Redis)]
-  end
-  subgraph worker_proc [Worker — run separately]
-    Worker[BullMQ Worker]
-  end
-  Next -->|"/api-proxy/*" rewrite| Express
-  Upload --> Mongo
-  Upload --> Redis
-  Worker --> Redis
-  Worker --> Mongo
-```
 
-### Design decisions
 
-| Area | Choice | Rationale |
-|------|--------|-----------|
-| **Queue** | BullMQ on Redis | Durable jobs, retries with exponential backoff, progress updates, and horizontal scaling of workers. |
-| **API vs worker** | Separate Node processes | Uploads and HTTP stay responsive; heavy CSV work runs out-of-band with configurable concurrency (`MAX_CONCURRENCY`). |
-| **Persistence** | MongoDB for job documents | Job metadata, status, and results are queryable for listing and detail views. |
-| **Uploads** | Streaming (Busboy), disk storage | Large files are handled without loading the whole file into memory; paths are passed to the worker. |
-| **Dashboard** | Next.js with rewrites | Browser calls `/api-proxy/...` so the UI avoids CORS issues in development; production can align `NEXT_PUBLIC_API_URL` with your API host. |
-| **Safety** | Helmet, CORS, rate limiting on uploads | Baseline HTTP hardening and abuse throttling on the upload route. |
-
-The API **enqueues** jobs only; it does **not** process CSV rows. If the worker is not running, jobs remain queued (or pending in the database) until a worker consumes them.
-
----
 
 ## Prerequisites
 
@@ -70,11 +33,7 @@ Create `server/.env` (you can start from `server/.env.example` if present). Typi
 | `ALLOWED_FILE_TYPES` | MIME types | CSV-related types |
 | `MAX_CONCURRENCY` | Worker parallel jobs | `5` |
 
-**Dashboard** (`dashboard/.env.local` optional):
 
-| Variable | Purpose |
-|----------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend base URL used by Next rewrites (default `http://localhost:3000`) |
 
 ---
 
@@ -181,6 +140,3 @@ Ensure MongoDB and Redis are running before starting the server and worker.
 
 ---
 
-## License
-
-See package metadata in `server/package.json` and `dashboard/package.json`.
